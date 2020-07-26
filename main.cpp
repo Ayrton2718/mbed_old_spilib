@@ -1,24 +1,20 @@
 #include "mbed.h"
 #include "rtos.h"
+#include "roboken_lib/spi_lib/SPILib.h"
 
-Thread thread;
-DigitalOut led1(LED2);
+/*
+NUCLEO　注意事項
+saftyピン変更
+SPI各種pinの変更
+以上
+ */
 
-// USBSerial serial;
+SPILib g_spi(1, 0, 0);
 
-#define STOP_FLAG 1
-
-// Blink function toggles the led in a long running loop
-void blink(DigitalOut *led) {
-    while (!ThisThread::flags_wait_any_for(STOP_FLAG, (Kernel::Clock::duration_u32)500)) {
-        *led = !*led;
-    }
-}
 
 // Spawns a thread to run blink for 5 seconds
 int main() {
-    thread.start(callback(blink, &led1));
-    ThisThread::sleep_for((Kernel::Clock::duration_u32)10000);
-    thread.flags_set(STOP_FLAG);
-    thread.join();
+    roboken_basic::wait_ms(100);
+
+    g_spi.driverInit(SLOT1, 1);
 }
