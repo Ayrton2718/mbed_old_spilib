@@ -219,16 +219,16 @@ namespace spi_lib
     // SPI初期化
     void SPILib::ss_init(void)
     {
-        // // SPI通信ピン設定
-        // spiSen  = new SPIComm(MOSI1, MISO1, SCK1);
-        // spi     = new SPIComm(MOSI2, MISO2, SCK2);
-    
-        // // BusOut(LSB ~ MSB)
-        // select = new BusOut(p29, p26, p30);
-        // ss = new BusOut(p25, p24, p23, p22); //p15~p25
-        // sen_ss = new BusOut(p21, p16);
-
         // SPI通信ピン設定
+        spiSen  = new SPIComm(MOSI1, MISO1, SCK1);
+        spi     = new SPIComm(MOSI2, MISO2, SCK2);
+    
+        // BusOut(LSB ~ MSB)
+        select = new BusOut(p29, p26, p30);
+        ss = new BusOut(p25, p24, p23, p22); //p15~p25
+        sen_ss = new BusOut(p21, p16);
+
+/*      // SPI通信ピン設定
         // spiSen  = new SPIComm(MOSI1, MISO1, SCK1);
         spi     = new SPIComm(SPI_MOSI, SPI_MISO, SPI_CS);
     
@@ -236,6 +236,7 @@ namespace spi_lib
         select = new BusOut(PB_0, PB_1, PB_2);
         ss = new BusOut(PB_3, PB_4, PB_5, PB_6); //p15~p25
         // sen_ss = new BusOut(p21, p16);
+*/
     }
     
     void SPILib::output_ss(int slot)
