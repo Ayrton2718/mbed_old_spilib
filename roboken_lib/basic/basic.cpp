@@ -34,20 +34,21 @@ unsigned int make32(unsigned char data4, unsigned char data3, unsigned char data
     return  data;
 }
 
-// DigitalOut safety(p8);
-
 //-------- セーフティピン ----------//
 // セーフティピンLOW
 void safetyLow(void)
 {
-    DigitalOut safety(p8);
-    safety = 0;
+    // DigitalOut safety(p8, 0);
+
+    DigitalOut safety(PC_10, 0);
 }
+
 // セーフティピンHIGH
 void safetyHigh(void)
 {
-    DigitalOut safety(p8);
-    safety = 1;
+    // DigitalOut safety(p8, 1);
+
+    DigitalOut safety(PC_10, 1);
 }
 
 void wait_ms(int ms)
