@@ -73,6 +73,7 @@ namespace spi_lib
         isSPIDriverComm = false;
         isSPISensorComm = false;
 
+
         ss_init();
         // SSpin初期化
         output_ss(SlaveNoSelect);
@@ -222,7 +223,6 @@ namespace spi_lib
         // SPI通信ピン設定
         spiSen  = new SPIComm(MOSI1, MISO1, SCK1);
         spi     = new SPIComm(MOSI2, MISO2, SCK2);
-    
         // BusOut(LSB ~ MSB)
         select = new BusOut(p29, p26, p30);
         ss = new BusOut(p25, p24, p23, p22); //p15~p25

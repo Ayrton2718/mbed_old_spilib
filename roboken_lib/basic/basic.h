@@ -11,7 +11,7 @@ static mbed::DigitalOut led2(LED2);
 static mbed::DigitalOut led3(LED3);
 static mbed::DigitalOut led4(LED4);
 
-static DigitalOut safety(p8);
+// static DigitalOut safety(p8);
 // static DigitalOut safety(PC_0);
 
 
