@@ -6,10 +6,10 @@
 namespace roboken_basic
 {
 
-static mbed::DigitalOut led1(LED1);
-static mbed::DigitalOut led2(LED2);
-static mbed::DigitalOut led3(LED3);
-static mbed::DigitalOut led4(LED4);
+static mbed::DigitalOut led1(PC_12);
+static mbed::DigitalOut led2(PC_12);
+static mbed::DigitalOut led3(PC_12);
+static mbed::DigitalOut led4(PC_12);
 
 // static DigitalOut safety(p8);
 // static DigitalOut safety(PC_0);

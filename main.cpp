@@ -16,12 +16,26 @@ SPILib g_spi(1, 0, 0);
 int main() {
     roboken_basic::wait_ms(100);
 
-    g_spi.setInitMode(SLOT1, MOT);
-    g_spi.setMotorDuty(SLOT1, 0x80);
-    g_spi.setInitFunwariH(SLOT1, 3);
-    g_spi.setInitFunwariL(SLOT1, 3);
-    while(g_spi.driverInit(SLOT1));
+    printf("start\n");
+
+    g_spi.setInitMode(SLOT3, MOT);
+    g_spi.setMotorDuty(SLOT3, 0x80);
+    g_spi.setInitFunwariH(SLOT3, 3);
+    g_spi.setInitFunwariL(SLOT3, 3);
+    while(true)
+    {
+        int ans = g_spi.driverInit(SLOT3);
+        printf("%d", ans);
+        if(ans != 1)
+        {
+            break;
+        }
+
+        roboken_basic::wait_ms(10);
+    }
     roboken_basic::wait_ms(100);
+
+    printf("success init\n");
 
     roboken_basic::safetyLow();
 
