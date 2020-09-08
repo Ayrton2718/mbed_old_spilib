@@ -79,7 +79,6 @@ namespace spi_lib
         printf("2\n");
         // SSpin初期化
         output_ss(SlaveNoSelect);
-        printf("3\n");
 
         // currentCutPin = new DigitalIn(p14);
         // spiStopPin = new DigitalIn(p17);
@@ -248,7 +247,7 @@ namespace spi_lib
             *ss = val & ~shift;
         }
     }
-    
+
     // ビットから互換数字へ変換(16bit対応)
     int SPILib::bitNumConv(int bit)
     {
@@ -419,7 +418,7 @@ namespace spi_lib
         // 通信結果を返す  
         return failure;
     }
-    
+
     // SPI通信状態確認関数
     bool SPILib::checkDriverComm()
     {
@@ -991,7 +990,7 @@ namespace spi_lib
             data[2] = Dummy;
             data[3] = Dummy;
         }
-    
+
         if(mode == LimSw)
             return limSwState[SLOT1][(int)data[0]];
         else if(mode == PSDPhoto)
@@ -1008,7 +1007,8 @@ namespace spi_lib
         data[0] = Dummy;
         data[1] = Dummy;
         data[2] = Dummy;
-        data[3] = Dummy;    
+        data[3] = Dummy;
+
         return allLimitSwState[SLOT1];
     }
     
@@ -1021,7 +1021,7 @@ namespace spi_lib
         data[1] = Dummy;
         data[2] = Dummy;
         data[3] = Dummy;
-        
+
         return gyData[SLOT1][axis];
     }
     
@@ -1034,6 +1034,7 @@ namespace spi_lib
         data[1] = Dummy;
         data[2] = Dummy;
         data[3] = Dummy;    
+
         return acData[SLOT1][axis];
     }
     
@@ -1045,7 +1046,8 @@ namespace spi_lib
         data[0] = analogNum;
         data[1] = Dummy;
         data[2] = Dummy;
-        data[3] = Dummy;    
+        data[3] = Dummy;
+    
         return anData[SLOT1][analogNum];
     }
 
