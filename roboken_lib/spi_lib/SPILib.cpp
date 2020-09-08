@@ -73,10 +73,8 @@ namespace spi_lib
         isSPIDriverComm = false;
         isSPISensorComm = false;
 
-        printf("1\n");
 
         ss_init();
-        printf("2\n");
         // SSpin初期化
         output_ss(SlaveNoSelect);
 
@@ -220,21 +218,21 @@ namespace spi_lib
     void SPILib::ss_init(void)
     {
         // SPI通信ピン設定
-        printf("1\n");
         spi     = new SPIComm(PA_7, PA_6, PA_5);
-        printf("2\n");
-        // select = new BusOut(PA_3, PA_1, PA_0);
-        select = new BusOut(A2, A1, A0);
-        printf("3\n");
-        ss = new BusOut(PB_0, PB_7, PB_6, PB_1); //p15~p25
+        // select = new BusOut(PA_3, PA_1, PA_0);        printf("2\n");
+
+        // select = new BusOut(PA_3, PA_1, NC);
+        // ss = new BusOut(PB_0, PB_7, PB_6, PB_1); //p15~p25
         // ss = new BusOut(D3, D4, D5, D6); //p15~p25
+        select = new BusOut(D1, D0, D3);
+        ss = new BusOut(D6, D7, D8, D9);
     }
     
     void SPILib::output_ss(int slot)
     {
         int val = 0x0f;
         int shift = 0x01;
-    
+
         // SSpin-High
         *ss = val;
     
@@ -405,7 +403,7 @@ namespace spi_lib
         // 通信終了(10us待ちは重要！)
         wait_us(10);
         output_ss(SlaveNoSelect);
-    
+
         // SPI通信失敗LED点灯
         if(failure == SPI_FAILED)
             roboken_basic::led1 = 1;
