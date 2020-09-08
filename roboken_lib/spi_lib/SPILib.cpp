@@ -224,20 +224,28 @@ namespace spi_lib
         // spiSen  = new SPIComm(MOSI1, MISO1, SCK1);
         // spi     = new SPIComm(MOSI2, MISO2, SCK2);
         // // BusOut(LSB ~ MSB)
+		slaveNum = mdNum + mmdNum + adNum + sdNum + sadNum + encNum;
+
+		isSPIDriverComm = false;
+		isSPISensorComm = false;
+
+		ss_init();
+		// SSpin初期化
+		output_ss(SlaveNoSelect);
+		output_sen_ss(SlaveNoSelect);
         // select = new BusOut(p29, p26, p30);
         // ss = new BusOut(p25, p24, p23, p22); //p15~p25
         // sen_ss = new BusOut(p21, p16);
 
-        // roboken_basic::wait_ms(10000000);
-
         // SPI通信ピン設定
-        spiSen  = new SPIComm(PB_5, PB_4, PB_3);
+        // spiSen  = new SPIComm(PB_15, PB_14, PB_13);
+        // spi  = new SPIComm(PB_5, PB_4, PB_3);
         spi     = new SPIComm(PA_7, PA_6, PA_5);
     
         // BusOut(LSB ~ MSB)
-        select = new BusOut(PC_8, PC_6, PC_5);
-        ss = new BusOut(PC_0, PC_1, PB_0, PA_4); //p15~p25
-        sen_ss = new BusOut(PC_2, PC_3);
+        select = new BusOut(PA_3, PA_1, PA_0);
+        ss = new BusOut(PB_0, PB_7, PB_6, PB_1); //p15~p25
+        // sen_ss = new BusOut(PC_2, PC_3);
     }
     
     void SPILib::output_ss(int slot)
