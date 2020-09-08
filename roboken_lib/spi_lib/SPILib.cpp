@@ -73,11 +73,13 @@ namespace spi_lib
         isSPIDriverComm = false;
         isSPISensorComm = false;
 
+        printf("1\n");
 
         ss_init();
+        printf("2\n");
         // SSpin初期化
         output_ss(SlaveNoSelect);
-        output_sen_ss(SlaveNoSelect);
+        printf("3\n");
 
         // currentCutPin = new DigitalIn(p14);
         // spiStopPin = new DigitalIn(p17);
@@ -143,7 +145,6 @@ namespace spi_lib
         ss_init();
         // SSpin初期化
         output_ss(SlaveNoSelect);
-        output_sen_ss(SlaveNoSelect);
     
         // currentCutPin = new DigitalIn(p14);
         // spiStopPin = new DigitalIn(p17);
@@ -209,7 +210,6 @@ namespace spi_lib
 		ss_init();
 		// SSpin初期化
 		output_ss(SlaveNoSelect);
-		output_sen_ss(SlaveNoSelect);
 
 		// currentCutPin = new DigitalIn(p14);
 		// spiStopPin = new DigitalIn(p17);
@@ -220,32 +220,15 @@ namespace spi_lib
     // SPI初期化
     void SPILib::ss_init(void)
     {
-        // // SPI通信ピン設定
-        // spiSen  = new SPIComm(MOSI1, MISO1, SCK1);
-        // spi     = new SPIComm(MOSI2, MISO2, SCK2);
-        // // BusOut(LSB ~ MSB)
-		slaveNum = mdNum + mmdNum + adNum + sdNum + sadNum + encNum;
-
-		isSPIDriverComm = false;
-		isSPISensorComm = false;
-
-		ss_init();
-		// SSpin初期化
-		output_ss(SlaveNoSelect);
-		output_sen_ss(SlaveNoSelect);
-        // select = new BusOut(p29, p26, p30);
-        // ss = new BusOut(p25, p24, p23, p22); //p15~p25
-        // sen_ss = new BusOut(p21, p16);
-
         // SPI通信ピン設定
-        // spiSen  = new SPIComm(PB_15, PB_14, PB_13);
-        // spi  = new SPIComm(PB_5, PB_4, PB_3);
+        printf("1\n");
         spi     = new SPIComm(PA_7, PA_6, PA_5);
-    
-        // BusOut(LSB ~ MSB)
-        select = new BusOut(PA_3, PA_1, PA_0);
+        printf("2\n");
+        // select = new BusOut(PA_3, PA_1, PA_0);
+        select = new BusOut(A2, A1, A0);
+        printf("3\n");
         ss = new BusOut(PB_0, PB_7, PB_6, PB_1); //p15~p25
-        // sen_ss = new BusOut(PC_2, PC_3);
+        // ss = new BusOut(D3, D4, D5, D6); //p15~p25
     }
     
     void SPILib::output_ss(int slot)
@@ -263,22 +246,6 @@ namespace spi_lib
     
             shift <<= (slot / 8);
             *ss = val & ~shift;
-        }
-    }
-    
-    void SPILib::output_sen_ss(int slot)
-    {
-        int val = 0x07;
-        int shift = 0x01;
-    
-        // SSpin-High
-        *sen_ss = val;
-    
-        // SSpin-Low
-        if(slot >= 0)
-        {
-            shift <<= slot;
-            *sen_ss = val & ~shift;
         }
     }
     
@@ -450,130 +417,6 @@ namespace spi_lib
         isFailureDriver[slot] = failure;
     
         // 通信結果を返す  
-        return failure;
-    }
-    
-    int SPILib::spiSensorComm(char data[SPISize], char mode, int slot)
-    {
-        int failure = SPI_SUCCESS;
-        char checksum;
-        char driverChecksum;
-        char receiveData[4] = {0};
-    
-        if(isSPISensorComm == true)
-        {
-            isFailureSensor[slot] = SPI_FAILED;
-            roboken_basic::led1 = 1;
-            return SPI_FAILED;
-        }
-        else
-        	isSPISensorComm = true;
-    
-        // チェックサム生成
-        checksum = mode;
-        for(int i = 0; i < SPISize; i++)
-            checksum += data[i];
-    
-        // 通信開始(10us待ちは重要！)
-        output_sen_ss(slot);
-        wait_us(10);
-    
-        // データ送信
-        spiSen->spi_write(mode); wait_us(1);
-    
-        // 1Byte目送信 & mode受信
-        if(spiSen->spi_write(data[0])  != mode)
-			failure = SPI_FAILED;
-    
-        // データ準備←センサの仕様ごとに変えるべし
-        if(mode == GYSensor)
-            wait_us(50);
-        else if(mode == ADSensor || mode == ACSensor)
-            wait_us(40);
-        /*else if(mode == ColorRed || mode == ColorGreen || mode == ColorBlue || mode == ColorInfra)
-        	wait_ms(30);*/
-        else
-            wait_us(20);
-    
-        receiveData[0] = (char)spiSen->spi_write(data[1]);  wait_us(1);
-        receiveData[1] = (char)spiSen->spi_write(data[2]);  wait_us(1);
-        receiveData[2] = (char)spiSen->spi_write(data[3]);  wait_us(1);
-        receiveData[3] = (char)spiSen->spi_write(checksum); wait_us(1);
-        driverChecksum = (char)spiSen->spi_write(Dummy);
-    
-        checksum = mode;
-        for(int i = 0; i < SPISize; i++)
-            checksum += receiveData[i];
-    
-        if(checksum != driverChecksum)
-        	failure = SPI_FAILED;
-    
-        // 通信終了(10us待ちは重要！)
-        wait_us(10);
-        output_sen_ss(SlaveNoSelect);
-    
-        if(failure != SPI_FAILED)
-        {
-            // センサ状態格納
-            switch(mode)
-            {
-                case LimSw:
-                    limSwState[slot][(int)data[0]] = (bool)receiveData[0];
-                    break;
-    
-                case LimSwAll:
-                    allLimitSwState[slot] = receiveData[0];
-                    break;
-    
-                case GYSensor:
-                    gyData[slot][(int)data[0]] = roboken_basic::make16(receiveData[1], receiveData[0]);
-                    // 2の補数を変換
-                    gyData[slot][(int)data[0]] = ~(gyData[slot][(int)data[0]] - 1);
-                    break;
-    
-                case ACSensor:
-					acData[slot][(int)data[0]] =  roboken_basic::make16(receiveData[1], receiveData[0]);
-                    break;
-    
-                case ADSensor:
-					anData[slot][(int)data[0]] = roboken_basic::make16(receiveData[1], receiveData[0]);
-                    break;
-    
-                case PSDPhoto:
-					psdPhotoState[slot][(int)data[0]] = (bool)receiveData[0];
-                    break;
-
-                case ColorRed:
-                	coData[(int)data[0]][RED] = roboken_basic::make16(receiveData[0], receiveData[1]);
-                	break;
-
-                case ColorGreen:
-                	coData[(int)data[0]][GREEN] = roboken_basic::make16(receiveData[0], receiveData[1]);
-                	break;
-
-                case ColorBlue:
-                	coData[(int)data[0]][BLUE] = roboken_basic::make16(receiveData[0], receiveData[1]);
-                	break;
-
-                case ColorInfra:
-                	coData[(int)data[0]][INFRA] = roboken_basic::make16(receiveData[0], receiveData[1]);
-                	break;
-    
-                default:
-                    break;
-            }
-        }
-    
-        // SPI通信失敗LED点灯
-        if(failure == SPI_FAILED)
-            roboken_basic::led1 = 1;
-        else
-            roboken_basic::led1 = 0;
-    
-        isSPISensorComm = false;
-        isFailureSensor[slot] = failure;
-    
-        // 通信結果を返す
         return failure;
     }
     
@@ -1149,9 +992,6 @@ namespace spi_lib
             data[3] = Dummy;
         }
     
-        if(spiSensorComm(data, mode, SLOT1))
-            failure = SPI_FAILED;
-    
         if(mode == LimSw)
             return limSwState[SLOT1][(int)data[0]];
         else if(mode == PSDPhoto)
@@ -1168,10 +1008,7 @@ namespace spi_lib
         data[0] = Dummy;
         data[1] = Dummy;
         data[2] = Dummy;
-        data[3] = Dummy;
-    
-        spiSensorComm(data, LimSwAll, SLOT1);
-    
+        data[3] = Dummy;    
         return allLimitSwState[SLOT1];
     }
     
@@ -1184,9 +1021,7 @@ namespace spi_lib
         data[1] = Dummy;
         data[2] = Dummy;
         data[3] = Dummy;
-    
-        spiSensorComm(data, GYSensor, SLOT1);
-    
+        
         return gyData[SLOT1][axis];
     }
     
@@ -1198,10 +1033,7 @@ namespace spi_lib
         data[0] = axis;
         data[1] = Dummy;
         data[2] = Dummy;
-        data[3] = Dummy;
-    
-        spiSensorComm(data, ACSensor, SLOT1);
-    
+        data[3] = Dummy;    
         return acData[SLOT1][axis];
     }
     
@@ -1213,10 +1045,7 @@ namespace spi_lib
         data[0] = analogNum;
         data[1] = Dummy;
         data[2] = Dummy;
-        data[3] = Dummy;
-    
-        spiSensorComm(data, ADSensor, SLOT1);
-    
+        data[3] = Dummy;    
         return anData[SLOT1][analogNum];
     }
 
@@ -1232,19 +1061,15 @@ namespace spi_lib
 		switch(color)
 		{
 		case RED :
-			spiSensorComm(data, ColorRed, SLOT2);
 			break;
 
 		case GREEN :
-			spiSensorComm(data, ColorGreen, SLOT2);
 			break;
 
 		case BLUE :
-			spiSensorComm(data, ColorBlue, SLOT2);
 			break;
 
 		case INFRA :
-			spiSensorComm(data, ColorInfra, SLOT2);
 			break;
 
 		default :
