@@ -97,10 +97,8 @@ namespace spi_lib
         static const int ColorSensNum = 16;
     
         SPIComm *spi;
-        SPIComm *spiSen;
         BusOut *select;
         BusOut *ss;
-        BusOut *sen_ss;
         
         // DigitalIn *currentCutPin;
         // DigitalIn *spiStopPin;
@@ -172,9 +170,7 @@ namespace spi_lib
         // SPI通信関数
         void ss_init(void);
         void output_ss(int slot);
-        void output_sen_ss(int slot);
         int spiDriverComm(char data[SPISize], char mode, int slot);
-        int spiSensorComm(char data[SPISize], char mode, int slot);
     
     public:
         // エンコーダカウント値格納配列

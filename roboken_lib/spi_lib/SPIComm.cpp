@@ -14,7 +14,8 @@ namespace spi_lib
     {
         spi = new SPI(mosi, miso, sck);
         spi->format(8, 1);
-        spi->frequency(1e+6);
+        // spi->frequency(1e+6);
+        spi->frequency(50000);
     }
     
     int SPIComm::spi_write(int tx_data)
