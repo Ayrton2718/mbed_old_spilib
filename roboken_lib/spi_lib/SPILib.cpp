@@ -218,13 +218,13 @@ namespace spi_lib
     void SPILib::ss_init(void)
     {
         // SPI通信ピン設定
-        spi     = new SPIComm(PA_7, PA_6, PA_5);
+        spi     = new SPIComm(A6, A5, A4);
         // select = new BusOut(PA_3, PA_1, PA_0);        printf("2\n");
 
         // select = new BusOut(PA_3, PA_1, NC);
         // ss = new BusOut(PB_0, PB_7, PB_6, PB_1); //p15~p25
         // ss = new BusOut(D3, D4, D5, D6); //p15~p25
-        select = new BusOut(D1, D0, D3);
+        select = new BusOut(A3, A2, A1);
         ss = new BusOut(D6, D7, D8, D9);
     }
     
