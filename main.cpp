@@ -24,12 +24,12 @@ int main() {
     {
         int ans = g_spi.driverInit(SLOT3);
         printf("%d", ans);
-        if(ans != 1)
+        if(ans == 0)
         {
             break;
         }
 
-        roboken_basic::wait_ms(10);
+        roboken_basic::wait_ms(50);
     }
     roboken_basic::wait_ms(100);
 
@@ -39,7 +39,7 @@ int main() {
 
     while(true)
     {
-        g_spi.driverSendMD(SLOT1, 0xA0);
+        g_spi.driverSendMD(SLOT3, 0xA0);
         roboken_basic::wait_ms(100);
     }
 }

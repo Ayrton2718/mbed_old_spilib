@@ -224,8 +224,8 @@ namespace spi_lib
         // select = new BusOut(PA_3, PA_1, NC);
         // ss = new BusOut(PB_0, PB_7, PB_6, PB_1); //p15~p25
         // ss = new BusOut(D3, D4, D5, D6); //p15~p25
-        select = new BusOut(A3, A2, A1);
-        ss = new BusOut(D6, D7, D8, D9);
+        select = new BusOut(D7, D8, D9);
+        ss = new BusOut(A0);
     }
     
     void SPILib::output_ss(int slot)

@@ -40,7 +40,7 @@ void safetyLow(void)
 {
     // DigitalOut safety(p8, 0);
 
-    DigitalOut safety(PF_0, 0);
+    DigitalOut safety(A1, 0);
 }
 
 // セーフティピンHIGH
@@ -48,7 +48,7 @@ void safetyHigh(void)
 {
     // DigitalOut safety(p8, 1);
 
-    DigitalOut safety(PF_0, 1);
+    DigitalOut safety(A1, 1);
 }
 
 void wait_ms(int ms)
